@@ -18,11 +18,11 @@ int main(int argc, char *argv[])
 	int send_size;
 	unsigned char command;
 
-	struct _rgbNetworkPacket rgbNetworkPacket;
+	struct _rgbPacket rgbPacket;
 
-	if(argc != 6)
+	if(argc != 7)
 	{
-		printf("Usage: ./main HOST RGB_DEST RED GREEN BLUE\n");
+		printf("Usage: ./main HOST RGB_DEST RED GREEN BLUE SMOOTHNESS\n");
 		exit(-1);
 	}
 
@@ -33,17 +33,19 @@ int main(int argc, char *argv[])
 	server.sin_port = htons(HAD_PORT);
 	inet_aton(argv[1], &server.sin_addr);
 	
-	rgbNetworkPacket.destination = atoi(argv[2]);
-	rgbNetworkPacket.red = atoi(argv[3]);
-	rgbNetworkPacket.green = atoi(argv[4]);
-	rgbNetworkPacket.blue = atoi(argv[5]);
-
+	rgbPacket.address = atoi(argv[2]);
+	rgbPacket.red = atoi(argv[3]);
+	rgbPacket.green = atoi(argv[4]);
+	rgbPacket.blue = atoi(argv[5]);
+	rgbPacket.smoothness = atoi(argv[6]);
+	
+	rgbPacket.count = 4;
 
 	if(connect(client_sock, (struct sockaddr*)&server, sizeof(server)) != 0)
 		printf("Konnte nicht verbinden\n");
 	command = CMD_NETWORK_RGB;
 	send(client_sock, &command, 1, 0);
-	send_size = send(client_sock, &rgbNetworkPacket, sizeof(rgbNetworkPacket), 0);
+	send_size = send(client_sock, &rgbPacket, sizeof(rgbPacket), 0);
 
 	close(client_sock);
 

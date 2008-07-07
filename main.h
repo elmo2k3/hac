@@ -5,12 +5,14 @@
 #define BUF_SIZE 1024
 #define CMD_NETWORK_RGB 1
 
-struct _rgbNetworkPacket
+struct _rgbPacket
 {
-	int destination;
-	int red;
-	int green;
-	int blue;
+	unsigned char address;
+	unsigned char count;
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+	unsigned char smoothness;
 };
 
 #endif
