@@ -20,11 +20,24 @@ int main(int argc, char *argv[])
 
 	struct _rgbPacket rgbPacket;
 
-	if(argc != 7)
+	if(argc == 7)
+	{
+		command = CMD_NETWORK_RGB;
+		rgbPacket.address = atoi(argv[2]);
+		rgbPacket.red = atoi(argv[3]);
+		rgbPacket.green = atoi(argv[4]);
+		rgbPacket.blue = atoi(argv[5]);
+		rgbPacket.smoothness = atoi(argv[6]);
+		rgbPacket.count = 4;
+	}
+	else if(argc == 2)
+		command = CMD_NETWORK_GET_RGB;
+	else
 	{
 		printf("Usage: ./main HOST RGB_DEST RED GREEN BLUE SMOOTHNESS\n");
 		exit(-1);
 	}
+
 
 	client_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if(client_sock < 0)
@@ -33,19 +46,27 @@ int main(int argc, char *argv[])
 	server.sin_port = htons(HAD_PORT);
 	inet_aton(argv[1], &server.sin_addr);
 	
-	rgbPacket.address = atoi(argv[2]);
-	rgbPacket.red = atoi(argv[3]);
-	rgbPacket.green = atoi(argv[4]);
-	rgbPacket.blue = atoi(argv[5]);
-	rgbPacket.smoothness = atoi(argv[6]);
-	
-	rgbPacket.count = 4;
 
 	if(connect(client_sock, (struct sockaddr*)&server, sizeof(server)) != 0)
 		printf("Konnte nicht verbinden\n");
-	command = CMD_NETWORK_RGB;
-	send(client_sock, &command, 1, 0);
-	send_size = send(client_sock, &rgbPacket, sizeof(rgbPacket), 0);
+	
+	switch(command)
+	{
+		case CMD_NETWORK_RGB:
+			send(client_sock, &command, 1, 0);
+			send_size = send(client_sock, &rgbPacket, sizeof(rgbPacket), 0);
+			break;
+		
+		case CMD_NETWORK_GET_RGB:
+			send(client_sock, &command, 1, 0);
+			recv(client_sock, &rgbPacket, sizeof(rgbPacket), 0);
+			printf("RGB Red: %d Green: %d Blue: %d Smoothness: %d\n",
+				rgbPacket.red,
+				rgbPacket.green,
+				rgbPacket.blue,
+				rgbPacket.smoothness);
+			break;
+	}
 
 	close(client_sock);
 

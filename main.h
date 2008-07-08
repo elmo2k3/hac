@@ -4,6 +4,7 @@
 #define HAD_PORT 4123
 #define BUF_SIZE 1024
 #define CMD_NETWORK_RGB 1
+#define CMD_NETWORK_GET_RGB 2
 
 struct _rgbPacket
 {
