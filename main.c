@@ -4,17 +4,34 @@
 
 int main(int argc, char *argv[])
 {
-	int foo;
+	uint8_t foo;
 
-	if(argc == 5)
-		setRgbValues(atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
-	else if(argc == 1)
-		rgbBlink(foo,foo);
-	else
+	if(argc < 2)
+		return 0;
+
+	if(!strcmp(argv[1],"blink"))
+		rgbBlink(0,0);
+
+	else if(!strcmp(argv[1],"sr"))
+		setRelais(atoi(argv[2]));
+
+	else if(!strcmp(argv[1],"gr"))
 	{
-		printf("Usage: ./main HOST RGB_DEST RED GREEN BLUE SMOOTHNESS\n");
-		exit(-1);
+		getRelaisState(&foo);
+		printf("%d\n",foo);
 	}
+	
+	else if(!strcmp(argv[1],"tr"))
+		toggleRelais(atoi(argv[2]));
+
+	else if(!strcmp(argv[1],"sled"))
+	{
+		setRgbValues(atoi(argv[2]),
+				atoi(argv[3]),
+				atoi(argv[4]),
+				atoi(argv[5]));
+	}
+
 
 	return 0;
 }
