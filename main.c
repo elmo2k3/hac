@@ -12,13 +12,16 @@ int main(int argc, char *argv[])
 	if(argc < 2)
 	{
 		printf("\nUsage: \
-				%s blink     Flash red\n \
+				%s blink     Flash red\n\n \
 				%s sr NUM    Set relais to NUM\n \
 				%s gr        Get relais status\n \
 				%s tr NUM    Toggle relais\n \
 				\n \
 				%s sled RED GREEN BLUE SMOOTHNESS\n \
-				%s gt MODUL SENSOR\n\n",
+				%s gt MODUL SENSOR\n \
+				%s gv MODUL\n \
+				\n",
+				argv[0],
 				argv[0],
 				argv[0],
 				argv[0],
@@ -57,6 +60,12 @@ int main(int argc, char *argv[])
 				atoi(argv[3]),
 				&temperature);
 		printf("\n%3.2f\n",temperature);
+	}
+	else if(!strcmp(argv[1], "gv"))
+	{
+		getVoltage(atoi(argv[2]),
+				&temperature);
+		printf("\n%3.3f\n",temperature);
 	}
 
 	closeLibHac();
