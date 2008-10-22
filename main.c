@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 	uint8_t foo;
 	float temperature;
 
+//	initLibHac("127.0.0.1");
 	initLibHac("192.168.0.2");
 
 	if(argc < 2)
@@ -17,10 +18,18 @@ int main(int argc, char *argv[])
 				%s gr        Get relais status\n \
 				%s tr NUM    Toggle relais\n \
 				\n \
-				%s sled RED GREEN BLUE SMOOTHNESS\n \
+				%s sled      RED GREEN BLUE SMOOTHNESS\n \
+				%s sledm     MODUL RED GREEN BLUE SMOOTHNESS\n \
 				%s gt MODUL SENSOR\n \
 				%s gv MODUL\n \
+				%s lt TEXT LIFETIME  Send text to LED-Display\n \
+				%s lcdoff    Set base-station lcd off\n \
+				%s lcdon     Set base-station lcd on\n \
 				\n",
+				argv[0],
+				argv[0],
+				argv[0],
+				argv[0],
 				argv[0],
 				argv[0],
 				argv[0],
@@ -66,6 +75,26 @@ int main(int argc, char *argv[])
 		getVoltage(atoi(argv[2]),
 				&temperature);
 		printf("\n%3.3f\n",temperature);
+	}
+	else if(!strcmp(argv[1], "sledm"))
+	{
+		setRgbValueModul(atoi(argv[2]),
+				atoi(argv[3]),
+				atoi(argv[4]),
+				atoi(argv[5]),
+				atoi(argv[6]));
+	}
+	else if(!strcmp(argv[1], "lt"))
+	{
+		ledSendText(argv[2],0,0,atoi(argv[3]));
+	}
+	else if(!strcmp(argv[1], "lcdoff"))
+	{
+		setBaseLcdOff();
+	}
+	else if(!strcmp(argv[1], "lcdon"))
+	{
+		setBaseLcdOn();
 	}
 
 	closeLibHac();
