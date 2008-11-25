@@ -2,14 +2,21 @@
 #include <stdlib.h>
 #include <libhac.h>
 
+
+
 int main(int argc, char *argv[])
 {
 	uint8_t foo;
 	float temperature;
+	
+	char *server_ip = getenv("HAD_HOST");
 
-//	initLibHac("127.0.0.1");
-	initLibHac("192.168.0.2");
+	if(!server_ip)
+		server_ip = "192.168.0.2";
 
+	initLibHac(server_ip);
+//	initLibHac("192.168.0.2");
+	
 	if(argc < 2)
 	{
 		printf("\nUsage: \
@@ -37,6 +44,7 @@ int main(int argc, char *argv[])
 				argv[0],
 				argv[0],
 				argv[0]);
+		printf("Using host %s\n",server_ip);
 		return 0;
 	}
 
@@ -48,8 +56,9 @@ int main(int argc, char *argv[])
 
 	else if(!strcmp(argv[1],"gr"))
 	{
-		getRelaisState(&foo);
-		printf("%d\n",foo);
+		struct _hadState hadState;
+		getHadState(&hadState);
+		printf("%d\n",hadState.relais_state);
 	}
 	
 	else if(!strcmp(argv[1],"tr"))
