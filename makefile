@@ -1,9 +1,10 @@
 LDFLAGS=-lhac
 CFLAGS=-I../libhac
-main: main.o
+
+hac: hac.o
 
 clean:
-	rm *.o main
+	$(RM) *.o main
 
-install: main
-	cp main /usr/bin/hac
+install: hac
+	cp hac /usr/bin/hac

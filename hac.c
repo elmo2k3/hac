@@ -3,7 +3,6 @@
 #include <libhac.h>
 
 
-
 int main(int argc, char *argv[])
 {
 	uint8_t foo;
@@ -27,12 +26,20 @@ int main(int argc, char *argv[])
 				\n \
 				%s sled      RED GREEN BLUE SMOOTHNESS\n \
 				%s sledm     MODUL RED GREEN BLUE SMOOTHNESS\n \
-				%s gt MODUL SENSOR\n \
-				%s gv MODUL\n \
-				%s lt TEXT LIFETIME  Send text to LED-Display\n \
+				%s gt	     MODUL SENSOR\n \
+				%s gv 	     MODUL\n \
+				%s lt 	     TEXT LIFETIME  Send text to LED-Display\n \
 				%s lcdoff    Set base-station lcd off\n \
 				%s lcdon     Set base-station lcd on\n \
+				%s ledmon    Set ledmatrix display on\n \
+				%s ledmoff   Set ledmatrix display off\n \
+				%s scrobon   Set scrobbler on\n \
+				%s scroboff  Set scrobbler off\n \
 				\n",
+				argv[0],
+				argv[0],
+				argv[0],
+				argv[0],
 				argv[0],
 				argv[0],
 				argv[0],
@@ -104,6 +111,22 @@ int main(int argc, char *argv[])
 	else if(!strcmp(argv[1], "lcdon"))
 	{
 		setBaseLcdOn();
+	}
+	else if(!strcmp(argv[1], "ledmon"))
+	{
+		setLedmatrixOn();
+	}
+	else if(!strcmp(argv[1], "ledmoff"))
+	{
+		setLedmatrixOff();
+	}
+	else if(!strcmp(argv[1], "scrobon"))
+	{
+		setScrobblerOn();
+	}
+	else if(!strcmp(argv[1], "scroboff"))
+	{
+		setScrobblerOff();
 	}
 
 	closeLibHac();
