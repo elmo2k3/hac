@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 	if(!server_ip)
 		server_ip = "192.168.0.2";
 
-	initLibHac(server_ip);
 //	initLibHac("192.168.0.2");
 	
 	if(argc < 2)
@@ -35,7 +34,11 @@ int main(int argc, char *argv[])
 				%s ledmoff   Set ledmatrix display off\n \
 				%s scrobon   Set scrobbler on\n \
 				%s scroboff  Set scrobbler off\n \
+				%s hadstate  Get had state\n \
+				%s hr20      Get HR20 state\n \
 				\n",
+				argv[0],
+				argv[0],
 				argv[0],
 				argv[0],
 				argv[0],
@@ -54,6 +57,8 @@ int main(int argc, char *argv[])
 		printf("Using host %s\n",server_ip);
 		return 0;
 	}
+	
+	initLibHac(server_ip);
 
 	if(!strcmp(argv[1],"blink"))
 		rgbBlink(0,0);
@@ -127,6 +132,29 @@ int main(int argc, char *argv[])
 	else if(!strcmp(argv[1], "scroboff"))
 	{
 		setScrobblerOff();
+	}
+	else if(!strcmp(argv[1], "hadstate"))
+	{
+		struct _hadState hadState;
+		getHadState(&hadState);
+		printf("Relais state: %d\n",hadState.relais_state);
+		printf("Input state: %d\n",hadState.input_state);
+		printf("Scrobbler activated: %s\n",hadState.scrobbler_user_activated ? "yes":"no");
+		printf("Ledmatrix activated: %s\n",hadState.ledmatrix_user_activated ? "yes":"no");
+	}
+	else if(!strcmp(argv[1], "hr20"))
+	{
+		int8_t mode, valve;
+		int16_t tempis, tempset, voltage;
+		hr20GetStatus(&tempis, &tempset, &valve, &voltage, &mode);
+		printf("Temp is:    %.2f C\n",(float)tempis/100);
+		printf("Temp set:   %.2f C\n",(float)tempset/100);
+		printf("Valve:      %d%% V\n",valve);
+		printf("Voltage:    %.2f\n",(float)voltage/1000);
+		if(mode == 1)
+			printf("Mode:       manual\n");
+		else
+			printf("Mode:       auto\n");
 	}
 
 	closeLibHac();
