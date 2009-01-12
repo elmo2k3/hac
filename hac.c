@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <libhac.h>
+#include "version.h"
 
 
 int main(int argc, char *argv[])
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
 	
 	if(argc < 2)
 	{
+		printf("hac version %s\n",VERSION);
 		printf("\nUsage: \
 				%s blink     Flash red\n\n \
 				%s sr NUM    Set relais to NUM\n \
@@ -36,7 +38,11 @@ int main(int argc, char *argv[])
 				%s scroboff  Set scrobbler off\n \
 				%s hadstate  Get had state\n \
 				%s hr20      Get HR20 state\n \
+				%s hr20temp  Set HR20 temperature *10 (50..300)\n \
+				%s hr20mode  Set HR20 mode (auto/manu)\n \
 				\n",
+				argv[0],
+				argv[0],
 				argv[0],
 				argv[0],
 				argv[0],
@@ -149,12 +155,36 @@ int main(int argc, char *argv[])
 		hr20GetStatus(&tempis, &tempset, &valve, &voltage, &mode);
 		printf("Temp is:    %.2f C\n",(float)tempis/100);
 		printf("Temp set:   %.2f C\n",(float)tempset/100);
-		printf("Valve:      %d%% V\n",valve);
-		printf("Voltage:    %.2f\n",(float)voltage/1000);
+		printf("Valve:      %d%%\n",valve);
+		printf("Voltage:    %.2fV\n",(float)voltage/1000);
 		if(mode == 1)
 			printf("Mode:       manual\n");
 		else
 			printf("Mode:       auto\n");
+	}
+	else if(!strcmp(argv[1], "hr20temp"))
+	{
+		if(argc != 3)
+		{
+			printf("Wrong number of arguments\n");
+			closeLibHac();
+			return 1;
+		}
+		int temperature = atoi(argv[2]);
+		setHr20Temperature(temperature);
+	}
+	else if(!strcmp(argv[1], "hr20mode"))
+	{
+		if(argc != 3)
+		{
+			printf("Wrong number of arguments\n");
+			closeLibHac();
+			return 1;
+		}
+		if(!strcmp(argv[2], "auto"))
+			setHr20Mode(HR20_MODE_AUTO);
+		else if(!strcmp(argv[2], "manu"))
+			setHr20Mode(HR20_MODE_MANU);
 	}
 
 	closeLibHac();
