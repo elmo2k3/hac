@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <libhac.h>
+#include <libhac/libhac.h>
 #include "version.h"
 
 
@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 	float temperature;
 	
 	char *server_ip = getenv("HAD_HOST");
+	char *password = getenv("HAD_PASS");
 
 	if(!server_ip)
 		server_ip = "192.168.0.2";
@@ -64,7 +65,10 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	
-	initLibHac(server_ip);
+	if(password)
+		initLibHac(server_ip, password);
+	else
+		initLibHac(server_ip, "");
 
 	if(!strcmp(argv[1],"blink"))
 		rgbBlink(0,0);
@@ -152,12 +156,13 @@ int main(int argc, char *argv[])
 	{
 		int8_t mode, valve;
 		int16_t tempis, tempset, voltage;
-		hr20GetStatus(&tempis, &tempset, &valve, &voltage, &mode);
-		printf("Temp is:    %.2f C\n",(float)tempis/100);
-		printf("Temp set:   %.2f C\n",(float)tempset/100);
-		printf("Valve:      %d%%\n",valve);
-		printf("Voltage:    %.2fV\n",(float)voltage/1000);
-		if(mode == 1)
+		struct _hr20info hr20info;
+		hr20GetStatus(&hr20info);
+		printf("Temp is:    %.2f C\n",(float)hr20info.tempis/100);
+		printf("Temp set:   %.2f C\n",(float)hr20info.tempset/100);
+		printf("Valve:      %d%%\n",hr20info.valve);
+		printf("Voltage:    %.2fV\n",(float)hr20info.voltage/1000);
+		if(hr20info.mode == 1)
 			printf("Mode:       manual\n");
 		else
 			printf("Mode:       auto\n");

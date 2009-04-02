@@ -1,5 +1,5 @@
-LDFLAGS=-lhac
-CFLAGS=-I../libhac
+LDFLAGS=`pkg-config libhac --libs` -lssl
+CFLAGS=`pkg-config libhac --cflags`
 
 hac: hac.o
 
